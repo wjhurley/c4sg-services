@@ -1,5 +1,6 @@
 # Java
 *.jar
+!gradle-wrapper.jar
 *.war
 *.ear
 bin
