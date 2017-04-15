@@ -1,32 +1,28 @@
 package org.c4sg.dto;
 
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel
-public class OrganizationDTO {
-	private Integer id;
-
-	@NotNull
-	private String name;
-
+public class CreateOrganizationDTO {
+	
+	@NotBlank
+	private String name;//required
+	
 	private String websiteURL;
-
-	@Length(max = 500)
+	
 	private String description;
-
+	
 	private String address1;
-
+	
 	private String address2;
-
+	
 	private String city;
 	
 	private String state;
-
+	
 	private String country;
 	
 	private String zip;
@@ -36,28 +32,14 @@ public class OrganizationDTO {
 	private String contactPhone;
 	
 	private String contactEmail;
-		
+	
 	private String category;
-	
-	private String status;
 
-	private String createDate;
-	
-	private String projectUpdatedTime;
-
-	@ApiModelProperty(value = "Organization ID")
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
+	@ApiModelProperty(required = true)
 	public String getName() {
 		return name;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -69,7 +51,7 @@ public class OrganizationDTO {
 	public void setWebsiteURL(String websiteURL) {
 		this.websiteURL = websiteURL;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -101,7 +83,7 @@ public class OrganizationDTO {
 	public void setCity(String city) {
 		this.city = city;
 	}
-	
+
 	public String getState() {
 		return state;
 	}
@@ -150,7 +132,7 @@ public class OrganizationDTO {
 		this.contactEmail = contactEmail;
 	}
 
-	@ApiModelProperty(value = "N-nonprofit, O-opensource")
+	@ApiModelProperty(value = "N-nonprofit, O-opensource, default to N")
 	public String getCategory() {
 		return category;
 	}
@@ -158,29 +140,5 @@ public class OrganizationDTO {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	
-	@ApiModelProperty(value = "A-active")
-	public String getStatus() {
-		return status;
-	}
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	
-	public String getCreateDate() {
-		return createDate;
-	}
-
-	public void setCreateDate(String createDate) {
-		this.createDate = createDate;
-	}
-
-	public String getProjectUpdatedTime() {
-		return projectUpdatedTime;
-	}
-
-	public void setProjectUpdatedTime(String projectUpdatedTime) {
-		this.projectUpdatedTime = projectUpdatedTime;
-	}
 }
