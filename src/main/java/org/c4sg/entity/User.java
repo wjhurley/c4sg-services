@@ -1,19 +1,14 @@
 package org.c4sg.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.c4sg.constant.UserStatus;
-import org.c4sg.constant.UserRole;
-import org.c4sg.converter.StatusConverter;
-import org.c4sg.converter.UserRoleConverter;
 
 @Entity
 @Table(name = "user")
@@ -41,59 +36,72 @@ public class User implements Serializable {
     @Column(name = "email", nullable = false)
     private String email;
     
-    @Column(name = "phone")
-    private String phone;
-    
-    @Column(name = "city")
-    private String city;
-    
     @Column(name = "state")
     private String state;
     
     @Column(name = "country")
     private String country;
     
-    @Column(name = "zip")
-    private String zip;
+    @Column(name = "latitude")
+    private BigDecimal latitude;
     
+    @Column(name = "longitude")
+    private BigDecimal longitude;
+
+    @Column(name = "phone")
+    private String phone;
+    
+	@Column(name = "title")
+	private String title;	
+	
     @Column(name = "introduction")
     private String introduction;
+    
+    @Column(name = "avatar_url")
+    private String avatarUrl;
     
     @Column(name = "linkedin_url")
     private String linkedinUrl;
     
     @Column(name = "personal_url")
     private String personalUrl;   
+    
+	@Column(name = "github_url")
+	private String githubUrl;
+	
+    @Column(name = "resume_url")
+    private String resumeUrl;
+    
+    @Column(name = "facebook_url")
+    private String facebookUrl;
+    
+    @Column(name = "twitter_url")
+    private String twitterUrl;
 
-    @Convert(converter = UserRoleConverter.class)
-    @Column(name = "role", columnDefinition="char(1)", nullable = false)
-    private UserRole role;
+    @Column(name = "publish_flag", columnDefinition="char(1)", nullable = false)
+    private String publishFlag;
 
-    @Column(name = "public_profile_flag", columnDefinition="char(1)", nullable = false)
-    private String publicProfileFlag;
-
+    @Column(name = "notify_flag", columnDefinition="char(1)", nullable = false)
+    private String notifyFlag;
+    
     @Column(name = "chat_flag", columnDefinition="char(1)", nullable = false)
     private String chatFlag;
             
     @Column(name = "forum_flag", columnDefinition="char(1)", nullable = false)
     private String forumFlag;
 
-    @Column(name="developer_flag", columnDefinition="char(1)", nullable = false)
-    private String developerFlag;
-  
-    @Convert(converter = StatusConverter.class)
+    @Column(name = "role", columnDefinition="char(1)", nullable = false)
+    private String role;
+    
     @Column(name = "status", columnDefinition="char(1)", nullable = false)
-    private UserStatus status;
+    private String status;
      
 	@Column(name = "created_time")
-	private Date createdTime;
+	private Timestamp createdTime;
 		
 	@Column(name = "updated_time")
-	private Date updatedTime;
+	private Timestamp updatedTime;
 	
-	@Column(name = "title")
-	private String title;	
-
 	public Integer getId() {
 		return id;
 	}
@@ -134,22 +142,6 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
 	public String getState() {
 		return state;
 	}
@@ -165,15 +157,39 @@ public class User implements Serializable {
 	public void setCountry(String country) {
 		this.country = country;
 	}
-
-	public String getZip() {
-		return zip;
+	
+	public BigDecimal getLatitude() {
+		return latitude;
 	}
 
-	public void setZip(String zip) {
-		this.zip = zip;
+	public void setLatitude(BigDecimal latitude) {
+		this.latitude = latitude;
+	}
+	
+	public BigDecimal getLongitude() {
+		return longitude;
 	}
 
+	public void setLongitude(BigDecimal longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone= phone;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title= title;
+	}
+	
 	public String getIntroduction() {
 		return introduction;
 	}
@@ -182,12 +198,28 @@ public class User implements Serializable {
 		this.introduction = introduction;
 	}
 
+	public String getAvatarUrl() {
+		return avatarUrl;
+	}
+
+	public void setAvatarUrl(String avatarUrl) {
+		this.avatarUrl = avatarUrl;
+	}
+	
 	public String getLinkedinUrl() {
 		return linkedinUrl;
 	}
 
 	public void setLinkedinUrl(String linkedinUrl) {
 		this.linkedinUrl = linkedinUrl;
+	}
+	
+	public String getGithubUrl() {
+		return githubUrl;
+	}
+
+	public void setGithubUrl(String githubUrl) {
+		this.githubUrl = githubUrl;
 	}
 
 	public String getPersonalUrl() {
@@ -198,22 +230,54 @@ public class User implements Serializable {
 		this.personalUrl = personalUrl;
 	}
 
-	public UserRole getRole() {
+	public String getResumeUrl() {
+		return resumeUrl;
+	}
+
+	public void setResumeUrl(String resumeUrl) {
+		this.resumeUrl = resumeUrl;
+	}
+	
+	public String getFacebookUrl() {
+		return facebookUrl;
+	}
+
+	public void setFacebookUrl(String facebookUrl) {
+		this.facebookUrl = facebookUrl;
+	}
+
+	public String getTwitterUrl() {
+		return twitterUrl;
+	}
+
+	public void setTwitterUrl(String twitterUrl) {
+		this.twitterUrl = twitterUrl;
+	}
+	
+	public String getRole() {
 		return role;
 	}
 
-	public void setRole(UserRole role) {
+	public void setRole(String role) {
 		this.role = role;
 	}
 
-	public String getPublicProfileFlag() {
-		return publicProfileFlag;
+	public String getPublishFlag() {
+		return publishFlag;
 	}
 
-	public void setPublicProfileFlag(String publicProfileFlag) {
-		this.publicProfileFlag = publicProfileFlag;
+	public void setPublishFlag(String publishFlag) {
+		this.publishFlag = publishFlag;
 	}
 
+	public String getNotifyFlag() {
+		return notifyFlag;
+	}
+
+	public void setNotifyFlag(String notifyFlag) {
+		this.notifyFlag = notifyFlag;
+	}
+	
 	public String getChatFlag() {
 		return chatFlag;
 	}
@@ -230,45 +294,28 @@ public class User implements Serializable {
 		this.forumFlag = forumFlag;
 	}
 
-	public String getDeveloperFlag() {
-		return developerFlag;
-	}
-
-	public void setDeveloperFlag(String developerFlag) {
-		this.developerFlag = developerFlag;
-	}
-
-	public UserStatus getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(UserStatus status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
-	public Date getCreatedTime() {
+	public Timestamp getCreatedTime() {
 		return createdTime;
 	}
 
-	public void setCreatedTime(Date createdTime) {
+	public void setCreatedTime(Timestamp createdTime) {
 		this.createdTime = createdTime;
 	}
 
-	public Date getUpdatedTime() {
+	public Timestamp getUpdatedTime() {
 		return updatedTime;
 	}
 
-	public void setUpdatedTime(Date updatedTime) {
+	public void setUpdatedTime(Timestamp updatedTime) {
 		this.updatedTime = updatedTime;
 	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title= title;
-	}
 	
-   
 }

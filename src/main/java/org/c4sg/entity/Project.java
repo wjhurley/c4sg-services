@@ -1,6 +1,6 @@
 package org.c4sg.entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +25,7 @@ public class Project {
 
 	@Column(name = "description")
 	private String description;
-
+    
 	@Column(name = "address1")
 	private String address1;
 
@@ -47,14 +47,17 @@ public class Project {
 	@Column(name = "remote_flag", columnDefinition="char(1) default 'Y'", nullable = false)
 	private String remoteFlag;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+    
     @Column(columnDefinition="char(1) default 'A'", nullable = false)
     private String status="A";
     
 	@Column(name = "created_time", nullable = false)
-	private Date createdTime;
+	private Timestamp createdTime;
 		
 	@Column(name = "updated_time", nullable = false)
-	private Date updatedTime;
+	private Timestamp updatedTime;
 	
 	@ManyToOne
 	@JoinColumn(name = "organization_id", insertable = true, updatable = false)
@@ -139,6 +142,14 @@ public class Project {
 	public void setRemoteFlag(String remoteFlag) {
 		this.remoteFlag = remoteFlag;
 	}	
+	
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
     
     public String getStatus() {
         return status;
@@ -148,19 +159,19 @@ public class Project {
         this.status = status;
     }
     
-	public Date getCreatedTime() {
+	public Timestamp getCreatedTime() {
 		return createdTime;
 	}
 
-	public void setCreatedTime(Date createdTime) {
+	public void setCreatedTime(Timestamp createdTime) {
 		this.createdTime = createdTime;
 	}
 	
-	public Date getUpdatedTime() {
+	public Timestamp getUpdatedTime() {
 		return updatedTime;
 	}
 
-	public void setUpdatedTime(Date updatedTime) {
+	public void setUpdatedTime(Timestamp updatedTime) {
 		this.updatedTime = updatedTime;
 	}
 

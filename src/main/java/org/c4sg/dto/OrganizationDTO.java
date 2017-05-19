@@ -14,7 +14,9 @@ public class OrganizationDTO {
 	@NotNull
 	private String name;
 
-	private String websiteURL;
+	private String websiteUrl;
+	
+    private String logoUrl;
 
 	@Length(max = 500)
 	private String description;
@@ -33,6 +35,8 @@ public class OrganizationDTO {
 
 	private String contactName;
 	
+	private String contactTitle;
+	
 	private String contactPhone;
 	
 	private String contactEmail;
@@ -41,7 +45,7 @@ public class OrganizationDTO {
 	
 	private String status;
 
-	private String createDate;
+	private String createdTime;
 	
 	private String projectUpdatedTime;
 
@@ -62,12 +66,19 @@ public class OrganizationDTO {
 		this.name = name;
 	}
 
-	public String getWebsiteURL() {
-		return websiteURL;
+	public String getWebsiteUrl() {
+		return websiteUrl;
 	}
 
-	public void setWebsiteURL(String websiteURL) {
-		this.websiteURL = websiteURL;
+	public void setWebsiteUrl(String websiteUrl) {
+		this.websiteUrl = websiteUrl;
+	}
+	
+	public String getLogoUrl() {
+		return logoUrl;
+	}
+	public void setLogoUrl(String logoUrl) {
+		this.logoUrl = logoUrl;
 	}
 	
 	public String getDescription() {
@@ -134,6 +145,14 @@ public class OrganizationDTO {
 		this.contactName = contactName;
 	}
 
+	public String getContactTitle() {
+		return contactTitle;
+	}
+
+	public void setContactTitle(String contactTitle) {
+		this.contactTitle = contactTitle;
+	}
+	
 	public String getContactPhone() {
 		return contactPhone;
 	}
@@ -168,12 +187,12 @@ public class OrganizationDTO {
 		this.status = status;
 	}
 	
-	public String getCreateDate() {
-		return createDate;
+	public String getCreatedTime() {
+		return createdTime;
 	}
 
-	public void setCreateDate(String createDate) {
-		this.createDate = createDate;
+	public void setCreatedTime(String createdTime) {
+		this.createdTime = createdTime;
 	}
 
 	public String getProjectUpdatedTime() {

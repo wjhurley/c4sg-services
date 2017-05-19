@@ -5,22 +5,31 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.c4sg.constant.Constants;
 import org.c4sg.dao.OrganizationDAO;
 import org.c4sg.dao.UserDAO;
 import org.c4sg.dao.UserOrganizationDAO;
 import org.c4sg.dto.CreateOrganizationDTO;
 import org.c4sg.dto.OrganizationDTO;
+import org.c4sg.dto.ProjectDTO;
 import org.c4sg.entity.Organization;
+import org.c4sg.entity.Project;
 import org.c4sg.entity.User;
 import org.c4sg.entity.UserOrganization;
+import org.c4sg.entity.UserProject;
+import org.c4sg.exception.UserOrganizationException;
+import org.c4sg.exception.UserProjectException;
 import org.c4sg.mapper.OrganizationMapper;
 import org.c4sg.service.OrganizationService;
+import org.c4sg.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static org.c4sg.constant.Directory.LOGO_UPLOAD;
 import static org.c4sg.constant.Format.IMAGE;
@@ -39,6 +48,9 @@ public class OrganizationServiceImpl implements OrganizationService {
 
 	@Autowired
 	private UserOrganizationDAO userOrganizationDAO;
+	
+	@Autowired
+	private ProjectService projectService;
 
     public void save(OrganizationDTO organizationDTO) {
         Organization organization = organizationMapper.getOrganizationEntityFromDto(organizationDTO);
@@ -46,7 +58,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     public List<OrganizationDTO> findOrganizations() {
-        List<Organization> organizations = organizationDAO.findAll();
+        List<Organization> organizations = organizationDAO.findAllByOrderByIdDesc();
         List<OrganizationDTO> organizationDTOS = organizations.stream().map(o -> organizationMapper
                 .getOrganizationDtoFromEntity(o)).collect(Collectors.toList());
         return organizationDTOS;
@@ -63,6 +75,14 @@ public class OrganizationServiceImpl implements OrganizationService {
                             .map(o -> organizationMapper.getOrganizationDtoFromEntity(o))
                             .collect(Collectors.toList());
     }
+    public List<OrganizationDTO> findByCriteria(String keyWord, String country, boolean open) {
+        List<Organization> organizations = organizationDAO.findByCriteria(keyWord, country, open);
+
+        return organizations.stream()
+                            .map(o -> organizationMapper.getOrganizationDtoFromEntity(o))
+                            .collect(Collectors.toList());
+    }
+    
 /*
     public OrganizationDTO createOrganization(OrganizationDTO organizationDTO) {
         Organization organization = organizationDAO.save(organizationMapper.getOrganizationEntityFromDto(organizationDTO));
@@ -78,7 +98,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     public OrganizationDTO updateOrganization(int id, OrganizationDTO organizationDTO) {
         Organization organization = organizationDAO.findOne(id);
         if (organization == null) {
-            //TODO: create new?
+        	System.out.println("Project does not exist.");
         } else {
             organization = organizationDAO.save(organizationMapper.getOrganizationEntityFromDto(organizationDTO));
         }
@@ -89,11 +109,18 @@ public class OrganizationServiceImpl implements OrganizationService {
     public void deleteOrganization(int id){
     	Organization organization = organizationDAO.findOne(id);
     	if(organization != null){
+    		organization.setStatus(Constants.ORGANIZATION_STATUS_CLOSED);
+    		organization.setLogoUrl(null);
+    		organizationDAO.save(organization);
+    		List<ProjectDTO> projects=projectService.findByOrganization(id);
+    		for (ProjectDTO project:projects){
+    			projectService.deleteProject(project.getId());
+    		}
+    		organizationDAO.deleteUserOrganizations(id);
     		//TODO: Local or Timezone?
     		//TODO: Format date
     		//organization.setDeleteTime(LocalDateTime.now().toString());
     		//organization.setDeleteBy(user.getUsername());
-    		organizationDAO.save(organization);
     	}
     }
 
@@ -112,5 +139,24 @@ public class OrganizationServiceImpl implements OrganizationService {
         organizationDtos.add(organizationMapper.getOrganizationDtoFromEntity(userOrganization));
       }
       return organizationDtos;
+    }
+    
+    @Override
+    public OrganizationDTO saveUserOrganization(Integer userId, Integer organizationId) throws UserOrganizationException {
+        User user = userDAO.findById(userId);
+        requireNonNull(user, "Invalid User Id");
+        Organization organization = organizationDAO.findOne(organizationId);
+        requireNonNull(organization, "Invalid organization Id");
+        UserOrganization userOrganization = userOrganizationDAO.findByUser_IdAndOrganization_Id(userId, organizationId);
+        if (nonNull(userOrganization)) {
+            throw new UserOrganizationException("The user organization relationship already exists.");
+        } else {
+        	userOrganization = new UserOrganization();
+        	userOrganization.setUser(user);
+        	userOrganization.setOrganization(organization);
+        	userOrganizationDAO.save(userOrganization);
+        }
+        
+        return organizationMapper.getOrganizationDtoFromEntity(organization);
     }
 }

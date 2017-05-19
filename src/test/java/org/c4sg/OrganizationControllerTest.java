@@ -1,6 +1,7 @@
 package org.c4sg;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,7 +78,7 @@ public class OrganizationControllerTest extends C4SGTest {
     	// 2. Tests all the fields
     	organizationDto = new CreateOrganizationDTO();
     	organizationDto.setName("Test Organization 2"); 
-    	organizationDto.setWebsiteURL("websiteURL");
+    	organizationDto.setWebsiteUrl("websiteUrl");
     	organizationDto.setDescription("description");
     	organizationDto.setAddress1("address1");
     	organizationDto.setAddress2("address2");
@@ -97,7 +98,7 @@ public class OrganizationControllerTest extends C4SGTest {
     		.andExpect(status().isOk())
     		.andExpect(jsonPath("$.organization.id", new GreaterThan<Integer>(0))) 
     		.andExpect(jsonPath("$.organization.name",is("Test Organization 2"))) 
-    		.andExpect(jsonPath("$.organization.websiteURL",is("websiteURL"))) 
+    		.andExpect(jsonPath("$.organization.websiteUrl",is("websiteUrl"))) 
     		.andExpect(jsonPath("$.organization.description",is("description"))) 
     		.andExpect(jsonPath("$.organization.address1",is("address1"))) 
     		.andExpect(jsonPath("$.organization.address2",is("address2"))) 
@@ -109,6 +110,7 @@ public class OrganizationControllerTest extends C4SGTest {
     		.andExpect(jsonPath("$.organization.contactPhone",is("contactPhone"))) 
     		.andExpect(jsonPath("$.organization.contactEmail",is("contactEmail"))) 
     		.andExpect(jsonPath("$.organization.category",is("O")))
-    		.andExpect(jsonPath("$.organization.status",is("A")));
+    		.andExpect(jsonPath("$.organization.status",is("A")))
+ 			.andExpect(jsonPath("$.organization.createdTime", is(nullValue())));
     }
 }

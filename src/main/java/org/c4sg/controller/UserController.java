@@ -7,13 +7,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.c4sg.dto.UserDTO;
 import org.c4sg.exception.NotFoundException;
+import org.c4sg.service.OrganizationService;
 import org.c4sg.service.UserService;
 import org.c4sg.util.FileUploadUtil;
+import org.c4sg.util.GeoCodeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +46,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/users")
@@ -55,7 +58,7 @@ public class UserController {
 
     @CrossOrigin
     @RequestMapping(value = "/active", method = RequestMethod.GET)
-    @ApiOperation(value = "Find users, with status applied", notes = "Returns a collection of active users")
+    @ApiOperation(value = "Find active volunteer users", notes = "Returns a collection of active volunteer users")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", dataType = "integer", paramType = "query",
                 value = "Results page you want to retrieve (0..N)"),
@@ -66,8 +69,8 @@ public class UserController {
                         "Default sort order is ascending. " +
                         "Multiple sort criteria are supported.")})
     public Page<UserDTO> getActiveUsers(Pageable pageable) {
-        LOGGER.debug("**************All**************");
-        return userService.findActiveUsers(pageable);
+        LOGGER.debug("**************active**************");
+        return userService.findActiveVolunteers(pageable);
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -95,20 +98,28 @@ public class UserController {
     @ApiOperation(value = "Add a new user")
     public UserDTO createUser(@ApiParam(value = "User object to return", required = true)
                               @RequestBody UserDTO userDTO) {
-        return userService.saveUser(userDTO);
+    	//calculate lat and long
+    	try {
+        	GeoCodeUtil geoCodeUtil = new GeoCodeUtil(userDTO);
+        	Map<String,BigDecimal> geoCode = geoCodeUtil.getGeoCode();
+			userDTO.setLatitude(geoCode.get("lat"));
+		    userDTO.setLongitude(geoCode.get("lon"));
+			
+		} catch (Exception e) {
+			
+			throw new NotFoundException("Error getting geocode");
+		}       
+       
+    	return userService.saveUser(userDTO);
     }
 
     @RequestMapping(method = RequestMethod.PUT)
     @ApiOperation(value = "Update an existing user")
     public UserDTO updateUser(@ApiParam(value = "Updated user object", required = true)
                               @RequestBody UserDTO userDTO) {
+    	LOGGER.debug("**************updateUser**************");
+    	LOGGER.debug("ID = " + userDTO.getId());
         return userService.saveUser(userDTO);
-    }
-
-    @RequestMapping(value = "/developers", method = RequestMethod.GET)
-    @ApiOperation(value = "Find developers", notes = "Returns a collection of users")
-    public List<UserDTO> getDevelopers() {
-        return userService.findDevelopers();
     }
 
     @CrossOrigin
@@ -133,17 +144,16 @@ public class UserController {
        LOGGER.debug("************** Delete : id=" + id + "**************");
         try {
             userService.deleteUser(id);
-        } catch (Exception e) {
+        } catch (Exception e) {        	
            LOGGER.error("Exception on delete user:", e);
         }
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ApiOperation(value = "Find a user by keyWord", notes = "Returns a collection of users")
-    public List<UserDTO> search(@RequestParam(required = false) String userName,
-                                @RequestParam(required = false) String firstName,
-                                @RequestParam(required = false) String lastName) {
-        return userService.search(userName, firstName, lastName);
+    public List<UserDTO> search(@RequestParam(required = false) String keyWord,
+                                @RequestParam(required = false) List<Integer> skills){
+        return userService.search(keyWord,skills);
     }
     
     @RequestMapping(value = "/{id}/avatar", method = RequestMethod.POST)
